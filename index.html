@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Falinwa Madagascar - Calcul salaire net</title>
+  <style>
+    :root {
+      --rouge: #c63d32;
+      --rouge-fonce: #963126;
+      --orange: #fb8c00;
+      --vert: #0f6b4b;
+      --vert-clair: #e8f4ec;
+      --ivoire: #fff8ed;
+      --papier: #fffdf8;
+      --texte: #272421;
+      --muted: #756c62;
+      --ligne: #eadbc8;
+      --ombre: 0 18px 45px rgba(72, 42, 24, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--texte);
+      background:
+        linear-gradient(90deg, rgba(198, 61, 50, 0.12) 0 12px, transparent 12px 28px),
+        linear-gradient(0deg, rgba(15, 107, 75, 0.08) 0 10px, transparent 10px 28px),
+        var(--ivoire);
+    }
+
+    main {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 30px 0;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 22px;
+      align-items: center;
+      margin-bottom: 24px;
+      padding: 18px 20px;
+      border: 1px solid var(--ligne);
+      border-radius: 8px;
+      background: rgba(255, 253, 248, 0.9);
+      box-shadow: var(--ombre);
+    }
+
+    .marque {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .symbole {
+      width: 70px;
+      height: 70px;
+      object-fit: contain;
+      border-radius: 50%;
+    }
+
+    .logo {
+      width: min(340px, 42vw);
+      max-height: 86px;
+      object-fit: contain;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.9rem, 4vw, 3.8rem);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .intro {
+      margin: 10px 0 0;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 1rem;
+    }
+
+    .contenu {
+      display: grid;
+      grid-template-columns: minmax(280px, 390px) 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .bloc {
+      border: 1px solid var(--ligne);
+      border-radius: 8px;
+      background: var(--papier);
+      box-shadow: var(--ombre);
+    }
+
+    form,
+    .resultats {
+      padding: 22px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .champ {
+      margin-bottom: 18px;
+    }
+
+    input {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid #dcc7b1;
+      border-radius: 6px;
+      padding: 11px 12px;
+      background: #ffffff;
+      color: var(--texte);
+      font: inherit;
+      font-size: 1rem;
+    }
+
+    input:focus {
+      outline: 3px solid rgba(251, 140, 0, 0.22);
+      border-color: var(--orange);
+    }
+
+    .choix {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .choix label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      margin: 0;
+      border: 1px solid #dcc7b1;
+      border-radius: 6px;
+      background: #ffffff;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .choix input {
+      width: auto;
+      min-height: auto;
+      margin-right: 8px;
+      accent-color: var(--rouge);
+    }
+
+    button {
+      width: 100%;
+      min-height: 50px;
+      border: 0;
+      border-radius: 6px;
+      padding: 12px 16px;
+      background: var(--rouge);
+      color: #ffffff;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: var(--rouge-fonce);
+    }
+
+    .resume {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .carte {
+      min-height: 110px;
+      border: 1px solid var(--ligne);
+      border-radius: 8px;
+      padding: 14px;
+      background: #ffffff;
+    }
+
+    .carte.principale {
+      border-color: rgba(15, 107, 75, 0.35);
+      background: var(--vert-clair);
+      color: var(--vert);
+    }
+
+    .carte span,
+    .arrondi span {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .carte strong,
+    .arrondi strong {
+      display: block;
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      line-height: 1.1;
+      overflow-wrap: anywhere;
+    }
+
+    .arrondi {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 18px;
+      border: 1px solid rgba(251, 140, 0, 0.45);
+      border-radius: 8px;
+      padding: 14px;
+      background: #fff4df;
+    }
+
+    .arrondi strong {
+      color: #9a5700;
+      text-align: right;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid var(--ligne);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      border-bottom: 1px solid var(--ligne);
+      text-align: right;
+      vertical-align: top;
+    }
+
+    th:first-child,
+    td:first-child {
+      text-align: left;
+    }
+
+    th {
+      background: #f7eadc;
+      color: var(--muted);
+      font-size: 0.84rem;
+      text-transform: uppercase;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .moins {
+      color: var(--rouge-fonce);
+      font-weight: 800;
+    }
+
+    .note {
+      margin: 18px 0 0;
+      padding: 14px;
+      border-left: 4px solid var(--vert);
+      border-radius: 6px;
+      background: #f7fbf5;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 0.94rem;
+    }
+
+    @media (max-width: 860px) {
+      main {
+        width: min(100% - 22px, 680px);
+        padding: 18px 0;
+      }
+
+      header,
+      .contenu,
+      .resume,
+      .arrondi {
+        grid-template-columns: 1fr;
+      }
+
+      .marque {
+        align-items: flex-start;
+      }
+
+      .logo {
+        width: min(300px, 80vw);
+      }
+
+      .arrondi strong {
+        text-align: left;
+      }
+
+      th,
+      td {
+        padding: 10px 8px;
+        font-size: 0.92rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="marque">
+        <img class="symbole" src="assets/falinwa-symbole.png" alt="Symbole Falinwa Madagascar">
+        <div>
+          <h1>Calcul salaire net</h1>
+          <p class="intro">Simulateur mensuel brut vers net pour Madagascar, avec CNaPS, OSTIE/OSIE et IRSA.</p>
+        </div>
+      </div>
+      <img class="logo" src="assets/falinwa-logo.png" alt="Falinwa Madagascar">
+    </header>
+
+    <section class="contenu" aria-label="Calculateur de salaire">
+      <form class="bloc" id="formulaire">
+        <div class="champ">
+          <label for="salairebrut">Salaire brut mensuel en ariary</label>
+          <input id="salairebrut" type="number" min="0" step="100" value="800000">
+        </div>
+
+        <div class="champ">
+          <label for="personnesacharge">Personnes à charge</label>
+          <input id="personnesacharge" type="number" min="0" step="1" value="0">
+        </div>
+
+        <div class="champ">
+          <label>Cotisations salariales</label>
+          <div class="choix">
+            <label><input id="cnapsactivee" type="checkbox" checked>CNaPS 1%</label>
+            <label><input id="ostieactivee" type="checkbox" checked>OSTIE 1%</label>
+          </div>
+        </div>
+
+        <button type="submit">Calculer le net</button>
+      </form>
+
+      <section class="bloc resultats" aria-live="polite">
+        <div class="resume">
+          <div class="carte principale">
+            <span>Net à payer</span>
+            <strong id="netapayer">0 Ar</strong>
+          </div>
+          <div class="carte">
+            <span>Total retenues</span>
+            <strong id="totalretenues">0 Ar</strong>
+          </div>
+          <div class="carte">
+            <span>Base IRSA</span>
+            <strong id="baseirsa">0 Ar</strong>
+          </div>
+        </div>
+
+        <div class="arrondi">
+          <div>
+            <span>Arrondi</span>
+            Net à payer arrondi au millier d'ariary supérieur
+          </div>
+          <strong id="netarrondi">0 Ar</strong>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Détail</th>
+              <th>Base</th>
+              <th>Montant</th>
+            </tr>
+          </thead>
+          <tbody id="details"></tbody>
+        </table>
+
+        <p class="note">
+          Calcul indicatif. Les primes, absences, avantages, heures supplémentaires et règles internes ne sont pas inclus.
+        </p>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const plafondcotisations = 2101440;
+    const reductionparpersonne = 2000;
+    const irsaminimum = 3000;
+
+    const tranchesirsa = [
+      { debut: 0, fin: 350000, taux: 0 },
+      { debut: 350000, fin: 400000, taux: 0.05 },
+      { debut: 400000, fin: 500000, taux: 0.10 },
+      { debut: 500000, fin: 600000, taux: 0.15 },
+      { debut: 600000, fin: 4000000, taux: 0.20 },
+      { debut: 4000000, fin: Infinity, taux: 0.25 }
+    ];
+
+    const formatariary = new Intl.NumberFormat("fr-FR", {
+      maximumFractionDigits: 0
+    });
+
+    const formulaire = document.querySelector("#formulaire");
+    const salairebrut = document.querySelector("#salairebrut");
+    const personnesacharge = document.querySelector("#personnesacharge");
+    const cnapsactivee = document.querySelector("#cnapsactivee");
+    const ostieactivee = document.querySelector("#ostieactivee");
+    const netapayer = document.querySelector("#netapayer");
+    const totalretenues = document.querySelector("#totalretenues");
+    const baseirsa = document.querySelector("#baseirsa");
+    const netarrondi = document.querySelector("#netarrondi");
+    const details = document.querySelector("#details");
+
+    function ariary(montant) {
+      return formatariary.format(Math.round(montant)) + " Ar";
+    }
+
+    function calculerirsa(base) {
+      let irsa = 0;
+      let lignes = "";
+
+      for (const tranche of tranchesirsa) {
+        const montanttranche = Math.max(0, Math.min(base, tranche.fin) - tranche.debut);
+
+        if (montanttranche > 0) {
+          const impottranche = montanttranche * tranche.taux;
+          const debut = tranche.debut === 0 ? "0 Ar" : ariary(tranche.debut + 1);
+          const fin = tranche.fin === Infinity ? "plus" : ariary(tranche.fin);
+
+          irsa = irsa + impottranche;
+          lignes = lignes + ligne(
+            "IRSA " + debut + " - " + fin + " (" + (tranche.taux * 100) + "%)",
+            ariary(montanttranche),
+            ariary(impottranche)
+          );
+        }
+      }
+
+      return { irsa, lignes };
+    }
+
+    function ligne(libelle, base, montant, classe = "") {
+      return "<tr><td>" + libelle + "</td><td>" + base + "</td><td class='" + classe + "'>" + montant + "</td></tr>";
+    }
+
+    function calculersalaire() {
+      const brut = Math.max(0, Number(salairebrut.value) || 0);
+      const personnes = Math.max(0, Math.floor(Number(personnesacharge.value) || 0));
+      const basecotisations = Math.min(brut, plafondcotisations);
+      const cnaps = cnapsactivee.checked ? basecotisations * 0.01 : 0;
+      const ostie = ostieactivee.checked ? basecotisations * 0.01 : 0;
+      const baseimposable = Math.max(0, brut - cnaps - ostie);
+      const calculirsa = calculerirsa(baseimposable);
+      const reduction = personnes * reductionparpersonne;
+      const irsa = brut > 0 ? Math.max(irsaminimum, Math.floor(calculirsa.irsa - reduction)) : 0;
+      const retenues = cnaps + ostie + irsa;
+      const netexact = brut - retenues;
+      const net = Math.ceil(netexact);
+      const milliersuperieur = Math.ceil(net / 1000) * 1000;
+
+      netapayer.textContent = ariary(net);
+      totalretenues.textContent = ariary(retenues);
+      baseirsa.textContent = ariary(baseimposable);
+      netarrondi.textContent = ariary(milliersuperieur);
+
+      details.innerHTML =
+        ligne("Salaire brut", "-", ariary(brut)) +
+        ligne("Base cotisations plafonnée", "-", ariary(basecotisations)) +
+        ligne("CNaPS salarié 1%", ariary(basecotisations), "-" + ariary(cnaps), "moins") +
+        ligne("OSTIE/OSIE salarié 1%", ariary(basecotisations), "-" + ariary(ostie), "moins") +
+        ligne("Base IRSA", "après cotisations", ariary(baseimposable)) +
+        calculirsa.lignes +
+        ligne("IRSA théorique", "-", ariary(calculirsa.irsa)) +
+        ligne("Réduction personnes à charge", personnes + " x " + ariary(reductionparpersonne), "-" + ariary(reduction), "moins") +
+        ligne("IRSA retenu", "minimum " + ariary(irsaminimum), "-" + ariary(irsa), "moins") +
+        ligne("Net à payer exact", "-", ariary(netexact)) +
+        ligne("Net à payer arrondi à l'ariary supérieur", "-", ariary(net)) +
+        ligne("Arrondi au millier supérieur", "-", ariary(milliersuperieur));
+    }
+
+    formulaire.addEventListener("submit", function (evenement) {
+      evenement.preventDefault();
+      calculersalaire();
+    });
+
+    formulaire.addEventListener("input", calculersalaire);
+    calculersalaire();
+  </script>
+</body>
+</html>
